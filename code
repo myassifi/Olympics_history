@@ -1,0 +1,74 @@
+-- Write  a Query To Find in which year and sport  united States has won the Highest Medals ?
+
+SELECT 
+  year, 
+  event, 
+  count(medal) AS number_of_medals 
+FROM 
+  olympics_history 
+Where 
+  team = 'United States' 
+  and Medal <> 'NA' 
+group by 
+  year, 
+  event 
+Order by 
+  number_of_medals DESC;
+  
+-- identify the sports which has played most consecutively in the summer Olympics games
+
+SELECT 
+  Event, 
+  COUNT(Event) as num_summer_games 
+FROM 
+  olympics_history 
+where 
+  Season = 'Summer' 
+group by 
+  Event 
+order by 
+  num_summer_games desc;
+  
+-- Write an sql query to fetch the details of the all countries which have won most number of silver and bronze and lest one gole medal
+
+SELECT 
+  team, 
+  sum(silver) As Silver, 
+  sum(bronze) AS Bronze, 
+  sum(gold) AS Gold 
+FROM 
+  (
+    select 
+      *, 
+      CASE Medal when 'Silver' then 1 else 0 end as Silver, 
+      CASE Medal when 'Bronze' then 1 else 0 end as Bronze, 
+      CASE Medal when 'Gold' then 1 else 0 end as Gold 
+    FROM 
+      olympics_history
+  ) innert 
+group by 
+  team 
+having 
+  sum(gold) > 0 
+order by 
+  sum(Silver) DESC;
+  
+-- Which player has the maximum NUmber of Gold
+
+SELECT 
+  Name, 
+  SUM(Gold) AS num_of_Goldmedals 
+FROM 
+  (
+    Select 
+      *, 
+      CASE Medal when 'Gold' then 1 else 0 end as Gold 
+    FROM 
+      olympics_history
+  ) innert 
+group by 
+  Name 
+Having 
+  SUM(Gold) > 0 
+Order by 
+  SUM(Gold) DESC
